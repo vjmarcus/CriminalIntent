@@ -15,8 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.UUID;
+
 public class CrimeFragment extends Fragment {  // may be problem with import Fragment, wrong import?
 
+    private static final String ARG_CRIME_ID = "crime_id";
     private Crime crime;
     private EditText titleField;
     private Button dateButton;
@@ -25,7 +28,17 @@ public class CrimeFragment extends Fragment {  // may be problem with import Fra
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        crime = new Crime();
+        UUID crimeId = (UUID)getArguments().getSerializable(ARG_CRIME_ID);
+        crime = CrimeLab.get(getActivity()).getCrime(crimeId);
+    }
+
+    public static CrimeFragment newInstance(UUID crimeId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CRIME_ID, crimeId);
+
+        CrimeFragment fragment = new CrimeFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Nullable
@@ -33,10 +46,12 @@ public class CrimeFragment extends Fragment {  // may be problem with import Fra
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
         titleField = v.findViewById(R.id.crime_title);
+        titleField.setText(crime.getTitle());
         dateButton = v.findViewById(R.id.crime_date);
         dateButton.setText(crime.getDate().toString());
         dateButton.setEnabled(false);
         solvedCheckbox = v.findViewById(R.id.crime_solved);
+        solvedCheckbox.setChecked(crime.isSolved());
         solvedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
