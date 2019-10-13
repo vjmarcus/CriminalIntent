@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
@@ -56,7 +57,9 @@ public class CrimeListFragment extends Fragment {
         public void bind (Crime crime) {
             this.crime = crime;
             titleTextView.setText(crime.getTitle());
-            dateTextView.setText(crime.getDate().toString());
+            android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
+            String dateString = dateFormat.format("EEEE, MMM dd, yyyy", crime.getDate()).toString();
+            dateTextView.setText(dateString.substring(0, 1).toUpperCase() + dateString.substring(1));
             solvedImageView.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
         }
 
