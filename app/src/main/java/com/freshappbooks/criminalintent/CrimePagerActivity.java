@@ -33,6 +33,7 @@ public class CrimePagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime_pager);
 
+        UUID crimeId = (UUID)getIntent().getSerializableExtra(EXTRA_CRIME_ID);
         viewPager = findViewById(R.id.crime_view_pager);
         crimes = CrimeLab.get(this).getCrimes();
         FragmentManager manager = getSupportFragmentManager();
@@ -49,5 +50,11 @@ public class CrimePagerActivity extends AppCompatActivity {
                 return crimes.size();
             }
         });
+        for (int i = 0; i < crimes.size(); i++) {
+            if (crimes.get(i).getId().equals(crimeId)) {
+                viewPager.setCurrentItem(i);
+                break;
+            }
+        }
     }
 }

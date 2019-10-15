@@ -14,11 +14,13 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {  // may be problem with import Fragment, wrong import?
 
+    private static final String DIALOG_DATE = "dialogDate";
     private static final String ARG_CRIME_ID = "crime_id";
     private Crime crime;
     private EditText titleField;
@@ -49,7 +51,14 @@ public class CrimeFragment extends Fragment {  // may be problem with import Fra
         titleField.setText(crime.getTitle());
         dateButton = v.findViewById(R.id.crime_date);
         dateButton.setText(crime.getDate().toString());
-        dateButton.setEnabled(false);
+        dateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager manager = getFragmentManager();
+                DatePickerFragment dialog = new DatePickerFragment();
+                dialog.show(manager, DIALOG_DATE);
+            }
+        });
         solvedCheckbox = v.findViewById(R.id.crime_solved);
         solvedCheckbox.setChecked(crime.isSolved());
         solvedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
