@@ -16,12 +16,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {  // may be problem with import Fragment, wrong import?
 
     private static final String DIALOG_DATE = "dialogDate";
     private static final String ARG_CRIME_ID = "crime_id";
+    private static final int REQUEST_DATE = 0;
     private Crime crime;
     private EditText titleField;
     private Button dateButton;
@@ -55,7 +57,8 @@ public class CrimeFragment extends Fragment {  // may be problem with import Fra
             @Override
             public void onClick(View v) {
                 FragmentManager manager = getFragmentManager();
-                DatePickerFragment dialog = new DatePickerFragment();
+                DatePickerFragment dialog = new DatePickerFragment().newInstance(crime.getDate());
+                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
                 dialog.show(manager, DIALOG_DATE);
             }
         });
