@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -29,14 +30,14 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false);
-        crimeRecyclerView =  view.findViewById(R.id.crime_recycler_view);
+        crimeRecyclerView = view.findViewById(R.id.crime_recycler_view);
         crimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();
         return view;
@@ -48,9 +49,23 @@ public class CrimeListFragment extends Fragment {
         inflater.inflate(R.menu.fragment_crime_list, menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_crime:
+                Crime crime = new Crime();
+                CrimeLab.get(getActivity()).addCrime(crime);
+                Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getId());
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
-        List <Crime> crimes = crimeLab.getCrimes();
+        List<Crime> crimes = crimeLab.getCrimes();
         if (adapter == null) {
             adapter = new CrimeAdapter(crimes);
             crimeRecyclerView.setAdapter(adapter);
@@ -60,6 +75,7 @@ public class CrimeListFragment extends Fragment {
 
 
     }
+
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Crime crime;
@@ -77,7 +93,7 @@ public class CrimeListFragment extends Fragment {
         }
 
 
-        public void bind (Crime crime) {
+        public void bind(Crime crime) {
             this.crime = crime;
             titleTextView.setText(crime.getTitle());
             android.text.format.DateFormat dateFormat = new android.text.format.DateFormat();
@@ -92,6 +108,7 @@ public class CrimeListFragment extends Fragment {
             startActivity(intent);
         }
     }
+
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
 
         private List<Crime> crimes;
